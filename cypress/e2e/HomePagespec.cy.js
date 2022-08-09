@@ -1,10 +1,23 @@
 describe('HomePage', () => {
   beforeEach(() => {
-    cy.intercept('http://localhost:3001/api/v1/urls', {
-      method: "GET",
-      fixture: 'urls.json',
-      statusCode: 200
+    cy.fixture('urls.json')
+    .then(urls => {
+      cy.intercept('GET', 'http://localhost:3001/api/v1/urls', {
+        body: urls
+      })
   })
+  cy.intercept('POST','http://localhost:3001/api/v1/urls', {
+    body: {
+      urls: [
+        {
+      id: 5, 
+      long_url: "https://www.istockphoto.com/photos/happy-panda", 
+      short_url: "http://localhost:3001/useshorturl/5", 
+      title: 'Cool Car'
+        }
+      ]
+    }
+  });
   cy.visit('http://localhost:3000/')
   })
   it('Should have a title', () => {
@@ -29,9 +42,10 @@ describe('HomePage', () => {
     cy.get('.url')
   })
   it("should be able to submit a Url to be shortened" , () => {
-    cy.intercept('POST','http://localhost:3001/api/v1/urls', (req) => {
-      expect(req.body.title).to.equal('Cool Car')
-  })
-    cy.submitUrl()
+    cy.get('form').within(() => {
+      cy.get('[data-cy="title"]').type('Cool Car')
+      cy.get('[data-cy="url"]').type('https://www.istockphoto.com/photos/happy-panda')
+    })
+    cy.get('.shorten-button').click()
   })
 })

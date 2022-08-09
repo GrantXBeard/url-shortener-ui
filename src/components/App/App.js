@@ -50,7 +50,7 @@ export class App extends Component {
       body: JSON.stringify(newUrl),
       headers: { "Content-type": 'application/json' },
   })
-  alert("Thank You!")
+  // alert("Thank You!")
   this.getData()
   }
 
