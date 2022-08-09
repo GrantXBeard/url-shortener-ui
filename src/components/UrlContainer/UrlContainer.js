@@ -2,8 +2,9 @@ import React from 'react';
 import './UrlContainer.css';
 import Url from '../Url/Url'
 
-const UrlContainer = props => {
-  const urlEls = props.urls.map(url => {
+const UrlContainer = ({ urls }) => {
+  const urlEls = urls.map(url => {
+    console.log(url)
     return (
       <Url
       key={url.id}

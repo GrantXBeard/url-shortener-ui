@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-import { getUrls } from '../../apiCalls';
 import UrlContainer from '../UrlContainer/UrlContainer';
 import UrlForm from '../UrlForm/UrlForm';
 
@@ -8,7 +7,7 @@ export class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      urls: [],
+      urls: null,
       isLoading: false
     }
   }
@@ -28,8 +27,9 @@ export class App extends Component {
       }
     })
     .then(data => {
+      console.log(data)
       this.setState({
-          urls: [...this.state.urls, data],
+          urls: data.urls,
           isLoading: false,
       })
     })
@@ -41,16 +41,29 @@ export class App extends Component {
     })
   }
 
+  addUrl = (newUrl) => {
+    // this.setState({ urls: [...this.state.urls, newUrl]})
+
+    this.setState({ isLoading: true })
+    fetch('http://localhost:3001/api/v1/urls', {
+      method: 'POST',
+      body: JSON.stringify(newUrl),
+      headers: { "Content-type": 'application/json' },
+  })
+  alert("Thank You!")
+  this.getData()
+  }
+
   render() {
     console.log(this.state)
     return (
       <main className="App">
         <header>
           <h1>URL Shortener</h1>
-          <UrlForm />
+          <UrlForm addUrl={this.addUrl}/>
         </header>
 
-        <UrlContainer urls={this.state.urls}/>
+        {this.state.urls && <UrlContainer urls={this.state.urls}/>}
       </main>
     );
   }
